@@ -10,6 +10,8 @@ import UIKit
 // 💡 일반적으로 class앞에 final 을 붙임 => 빨라짐 (다이렉트 디스패치가 일어나게함) / 대부분 상속불필요한 뷰컨트롤러에는 final 키워드 필수!
 final class ViewController: UIViewController {
     // 💡 대부분의 변수는 private 을 붙이는게 좋다
+    
+    // MARK: - 이메일 입력 뷰 구현
     // 클로저의 실행문 타입으로 구현하기 // 이메일 텍스트필드가 올라가는 view
     private lazy var emailTextFieldView: UIView = {
         let view = UIView()
@@ -53,7 +55,7 @@ final class ViewController: UIViewController {
         return tf
     }()
     
-    
+    // MARK: - 비밀번호 입력 뷰 구현
     // 패스워드 텍스트필드가 올라가는 view 메모리 올리기
     private lazy var passwordTextFieldView: UIView = {
         let view = UIView()
@@ -106,6 +108,7 @@ final class ViewController: UIViewController {
         return button
     }()
     
+    // MARK: - 로그인버튼 구현
     // 로그인 버튼 메모리올리기
     private lazy var loginButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -120,6 +123,8 @@ final class ViewController: UIViewController {
         return button
     }()
     
+    
+    // MARK: - 스택 뷰 구현
     // 스택 뷰 설정
     lazy var stackView: UIStackView = {
         let st = UIStackView(arrangedSubviews: [emailTextFieldView,passwordTextFieldView,loginButton])
@@ -131,6 +136,7 @@ final class ViewController: UIViewController {
     }()
     
     
+    // MARK: - 비밀번호 표시버튼 구현
     private lazy var passwordResetButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
@@ -150,11 +156,11 @@ final class ViewController: UIViewController {
     
     // 텍스트 입력관련 UI변경을 위한 델리게이트 패턴 구현 중 오토레이아웃 변경을 위한 변수생성
     // 내가 변경하고 싶은 제약(여기서는 가운데 정렬제약) 을 변수에 담음
-    
+    // MARK: - 오토레이아웃 제약조건 변수 정의
     lazy var emailInfoLabelCenterYConstraint = emailInfoLabel.centerYAnchor.constraint(equalTo: emailTextFieldView.centerYAnchor)
     lazy var passwordInfoLabelCenterYConstraint = passwordInfoLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor)
     
-    
+    // MARK: - 뷰디드로드 함수
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -165,6 +171,7 @@ final class ViewController: UIViewController {
     }
 
     
+    // MARK: - 처음 그려주는 화면 메서드
     func makeUI() {
         
         view.backgroundColor = .black
@@ -185,6 +192,8 @@ final class ViewController: UIViewController {
         passwordResetButton.translatesAutoresizingMaskIntoConstraints = false
         // 오토레이아웃 셋팅(add New Constraints 했던 부분을 코드로 구현) 기준점이 필요
         
+        
+        // MARK: - 오토레이아웃 제약조건 추가
         // 배열로 넣어줄 수 있음(익숙해진 후에는 이렇게 사용)
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
@@ -237,6 +246,8 @@ final class ViewController: UIViewController {
         
     }
     
+    
+    // MARK: - 비밀번호 표시버튼 동작 메서드
     // selector로 동작하므로 @objc 키워드 필요
     @objc func passwordSecureModeSetting() {
         passwordTextField.isSecureTextEntry.toggle()
@@ -246,6 +257,7 @@ final class ViewController: UIViewController {
     
     
     
+    // MARK: - 리셋버튼 메서드
     @objc func resetButtonTapped() {
         // print("reset button 눌림")
         
@@ -274,11 +286,15 @@ final class ViewController: UIViewController {
     }
     
     
+    
+    // MARK: - 로그인 버튼 메서드
     // 로그인 버튼이 눌렸을때의 메서드
     @objc func loginButtonTapped() {
         print("로그인 버튼이 눌렸습니다")
     }
     
+    
+    // MARK: - 화면 터치 시 키보드 내려가는 메서드
     // 화면이 터치되면 키보드가 내려감(first Responder 없어짐)
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
@@ -288,10 +304,13 @@ final class ViewController: UIViewController {
 }
 
 
+
+// MARK: - 델리게이트 패턴 구현을 위한 확장
 // 텍스트를 입력할때 레이블이 위로 올라가게 UI를 변경하고 싶음 => 델리게이트 패턴으로 구현필요
 // 메서드 등을 분리하기 위해서 이렇게 확장해서 delegate 프로토콜을 채택함
 extension ViewController: UITextFieldDelegate {
-    
+
+    // MARK: - 텍스트필드 입력 시작시점의 메서드
     // 텍스트필드의 입력이 시작되는 시점에서의 메서드 내용구현(델리게이트 프로토콜에 선택적 요구되어진 메서드내용 구현)
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField == emailTextField {
@@ -314,6 +333,8 @@ extension ViewController: UITextFieldDelegate {
         }
     }
     
+    
+    // MARK: - 텍스트필드 입력이 끝나는 시점의 메서드
     // 텍스트필드의 입력이 끝나는 시점에서의 메서드 내용구현(델리게이트 프로토콜에 선택적 요구되어진 메서드내용 구현)
     func textFieldDidEndEditing(_ textField: UITextField) {
         if textField == emailTextField {
@@ -341,6 +362,7 @@ extension ViewController: UITextFieldDelegate {
     }
     
     
+    // MARK: - 텍스트필드 변경시 호출 메서드(로그인 버튼활성화 관련)
     // 텍스트필드가 변경될때 호출되는 메서드
     @objc func textFieldEditingChanged(textField: UITextField) {
         // 첫번째 글자가 있는데 그 문자가 빈문자열이면 빈문자를 입력해주고 벗어나는 코드
