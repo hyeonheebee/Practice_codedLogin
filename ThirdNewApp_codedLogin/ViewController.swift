@@ -143,6 +143,13 @@ class ViewController: UIViewController {
     private let textViewHeight: CGFloat = 48
     
     
+    // 텍스트 입력관련 UI변경을 위한 델리게이트 패턴 구현 중 오토레이아웃 변경을 위한 변수생성
+    // 내가 변경하고 싶은 제약(여기서는 가운데 정렬제약) 을 변수에 담음
+    
+    lazy var emailInfoLabelCenterYConstraint = emailInfoLabel.centerYAnchor.constraint(equalTo: emailTextFieldView.centerYAnchor)
+    lazy var passwordInfoLabelCenterYConstraint = passwordInfoLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor)
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         emailTextField.delegate = self
@@ -183,8 +190,12 @@ class ViewController: UIViewController {
             
             emailInfoLabel.leadingAnchor.constraint(equalTo: emailTextFieldView.leadingAnchor, constant: 8),
             emailInfoLabel.trailingAnchor.constraint(equalTo: emailTextFieldView.trailingAnchor, constant: 8),
-            emailInfoLabel.centerYAnchor.constraint(equalTo: emailTextFieldView.centerYAnchor),
-
+            
+            // 고정으로 만들면 안됨
+            // emailInfoLabel.centerYAnchor.constraint(equalTo: emailTextFieldView.centerYAnchor),
+            // 만든 변수로 설정해줘야함
+            emailInfoLabelCenterYConstraint,
+            
             emailTextField.leadingAnchor.constraint(equalTo: emailTextFieldView.leadingAnchor, constant: 8),
             emailTextField.trailingAnchor.constraint(equalTo: emailTextFieldView.trailingAnchor, constant: 8),
             emailTextField.topAnchor.constraint(equalTo: emailTextFieldView.topAnchor, constant: 15),
@@ -193,7 +204,10 @@ class ViewController: UIViewController {
             
             passwordInfoLabel.leadingAnchor.constraint(equalTo: passwordTextFieldView.leadingAnchor, constant: 8),
             passwordInfoLabel.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: 8),
-            passwordInfoLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor),
+            // passwordInfoLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor),
+            // 만든 변수로 설정해줘야함
+            passwordInfoLabelCenterYConstraint,
+            
 
             passwordTextField.leadingAnchor.constraint(equalTo: passwordTextFieldView.leadingAnchor, constant: 8),
             passwordTextField.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: 8),
@@ -264,13 +278,13 @@ extension ViewController: UITextFieldDelegate {
             emailTextFieldView.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
             emailInfoLabel.font = UIFont.systemFont(ofSize: 11)
             // 오토레이아웃 업데이트(label을 이동시킴)
-            // emailInfoLabelCenterYConstraint.constant = -13
+            emailInfoLabelCenterYConstraint.constant = -13
         }
         if textField == passwordTextField {
             passwordTextFieldView.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
             passwordInfoLabel.font = UIFont.systemFont(ofSize: 11)
-            // 오토레이아웃 업데이트(label을 이동시킴)
-            // passwordInfoLabelCenterYConstraint.constant = -13
+            // 오토레이아웃 업데이트(label을 이동시킴) -13 => 올라감
+            passwordInfoLabelCenterYConstraint.constant = -13
         }
     }
     
@@ -281,7 +295,7 @@ extension ViewController: UITextFieldDelegate {
             if emailTextField.text == "" {
                 emailInfoLabel.font = UIFont.systemFont(ofSize: 18)
                 // 오토레이아웃 업데이트(label을 원래자리로 이동시킴)
-                // emailInfoLabelCenterYConstraint.constant = 0
+                emailInfoLabelCenterYConstraint.constant = 0
             }
                     }
         if textField == passwordTextField {
@@ -289,7 +303,7 @@ extension ViewController: UITextFieldDelegate {
             if passwordTextField.text == "" {
                 passwordInfoLabel.font = UIFont.systemFont(ofSize: 18)
                 // 오토레이아웃 업데이트(label을 원래자리로 이동시킴)
-                // passwordInfoLabelCenterYConstraint.constant = 0
+                passwordInfoLabelCenterYConstraint.constant = 0
             }
                     }
     }
