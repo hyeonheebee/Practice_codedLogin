@@ -54,13 +54,15 @@ class ViewController: UIViewController {
     
     
     // 패스워드 텍스트필드가 올라가는 view 메모리 올리기
-    private let passwordTextFieldView: UIView = {
+    private lazy var passwordTextFieldView: UIView = {
         let view = UIView()
         view.frame.size.height = 48
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.3269024491, blue: 0, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         view.layer.cornerRadius = 5
         view.clipsToBounds = true
-
+        view.addSubview(passwordTextField)
+        view.addSubview(passwordLabel)
+        view.addSubview(passwordSecureButton)
         return view
     }()
     
@@ -76,7 +78,7 @@ class ViewController: UIViewController {
     // 비밀번호 텍스트필드 메모리올리기
     private let passwordTextField: UITextField = {
         let tf = UITextField()
-        tf.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        tf.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         tf.frame.size.height = 48
         tf.backgroundColor = .clear
         tf.textColor = .white
@@ -107,7 +109,7 @@ class ViewController: UIViewController {
         button.layer.cornerRadius = 5
         button.clipsToBounds = true
         button.layer.borderWidth = 1
-        button.layer.borderColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        button.layer.borderColor = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
         button.setTitle("로그인", for: .normal)
         button.isEnabled = false    //처음에는 버튼을 비활성화 => 조건이 맞으면 활성화되도록
         
@@ -130,6 +132,8 @@ class ViewController: UIViewController {
     
     
     
+    // 스택 뷰 내의 3개의 텍스트필드의 각 높이 설정
+    private let textViewHeight: CGFloat = 48
     
     
     override func viewDidLoad() {
@@ -141,14 +145,29 @@ class ViewController: UIViewController {
     
     func makeUI() {
         // 가장 아래있는 뷰에 이메일 텍스트 뷰 올리기
-        view.addSubview(emailTextFieldView)
+        view.addSubview(stackView)
+        
         // 💡주의! 코드로 오토레이아웃 셋팅을 위한 사전 셋팅(필수) => 코드로 UI작성시 자동으로 frame 기준으로 오토레이아웃으로 잡아주는 기능을 끄는 코드
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
         emailInfoLabel.translatesAutoresizingMaskIntoConstraints = false
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
+
+        passwordLabel.translatesAutoresizingMaskIntoConstraints = false
+        passwordTextField.translatesAutoresizingMaskIntoConstraints = false
+        passwordSecureButton.translatesAutoresizingMaskIntoConstraints = false
         // 오토레이아웃 셋팅(add New Constraints 했던 부분을 코드로 구현) 기준점이 필요
         
         // 배열로 넣어줄 수 있음(익숙해진 후에는 이렇게 사용)
         NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            // 각 텍스트뷰의 높이의 3개만큼의 높이 + 36만큼의 높이를 가진 스택뷰 설정
+            stackView.heightAnchor.constraint(equalToConstant: textViewHeight*3 + 36),
+            
+            
             emailInfoLabel.leadingAnchor.constraint(equalTo: emailTextFieldView.leadingAnchor, constant: 8),
             emailInfoLabel.trailingAnchor.constraint(equalTo: emailTextFieldView.trailingAnchor, constant: 8),
             emailInfoLabel.centerYAnchor.constraint(equalTo: emailTextFieldView.centerYAnchor),
@@ -156,7 +175,22 @@ class ViewController: UIViewController {
             emailTextField.leadingAnchor.constraint(equalTo: emailTextFieldView.leadingAnchor, constant: 8),
             emailTextField.trailingAnchor.constraint(equalTo: emailTextFieldView.trailingAnchor, constant: 8),
             emailTextField.topAnchor.constraint(equalTo: emailTextFieldView.topAnchor, constant: 15),
-            emailTextField.bottomAnchor.constraint(equalTo: emailTextFieldView.bottomAnchor, constant: 2)
+            emailTextField.bottomAnchor.constraint(equalTo: emailTextFieldView.bottomAnchor, constant: 2),
+            
+            
+            passwordLabel.leadingAnchor.constraint(equalTo: passwordTextFieldView.leadingAnchor, constant: 8),
+            passwordLabel.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: 8),
+            passwordLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor),
+
+            passwordTextField.leadingAnchor.constraint(equalTo: passwordTextFieldView.leadingAnchor, constant: 8),
+            passwordTextField.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: 8),
+            passwordTextField.topAnchor.constraint(equalTo: passwordTextFieldView.topAnchor, constant: 15),
+            passwordTextField.bottomAnchor.constraint(equalTo: passwordTextFieldView.bottomAnchor, constant: 2),
+
+            
+            passwordSecureButton.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: -8),    // 끝에 붙어있는 표시버튼이므로 trailing 만 사용
+            passwordSecureButton.topAnchor.constraint(equalTo: passwordTextFieldView.topAnchor, constant: 15),
+            passwordSecureButton.bottomAnchor.constraint(equalTo: passwordTextFieldView.bottomAnchor, constant: -15)
         ])
          
     }
