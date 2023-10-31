@@ -93,12 +93,12 @@ class ViewController: UIViewController {
     
     
     // 비밀번호 텍스트필드 내 '표시' 버튼 메모리올리기
-    private let passwordSecureButton: UIButton = {
+    lazy var passwordSecureButton: UIButton = {
         let button = UIButton(type: .custom)    // 보통 system 혹은 custom을 주로 사용
         button.setTitle("표시", for: .normal)
         button.setTitleColor(#colorLiteral(red: 0.83, green: 0.83, blue: 0.83, alpha: 1), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .light)     // 타이틀레이블 크기
-        //button.addTarget(self, action: #selector(passwordSecureModeSetting), for: .touchUpInside)
+        button.addTarget(self, action: #selector(passwordSecureModeSetting), for: .touchUpInside)
         return button
     }()
     
@@ -216,6 +216,15 @@ class ViewController: UIViewController {
         
     }
     
+    // selector로 동작하므로 @objc 키워드 필요
+    @objc func passwordSecureModeSetting() {
+        passwordTextField.isSecureTextEntry.toggle()
+        // 보통 bool 타입은 toggle 메서드 제공하여 토글시 true <-> false 가능
+        // print("표시버튼이 눌렸습니다")
+    }
+    
+    
+    
     @objc func resetButtonTapped() {
         // print("reset button 눌림")
         
@@ -239,7 +248,7 @@ class ViewController: UIViewController {
         alert.addAction(cancel)
         
         // 다음화면으로 넘어가는 메서드 present
-        // 이 alert창이 실제로 다음화면임 
+        // 이 alert창이 실제로 다음화면임
         present(alert, animated: true, completion: nil)
     }
 
