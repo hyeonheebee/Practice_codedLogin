@@ -111,7 +111,12 @@ class ViewController: UIViewController {
         return button
     }()
     
-    
+    lazy var stackView: UIStackView = {
+        let st = UIStackView()
+        // let st = UIStackView(arrangedSubviews: <#T##[UIView]#>) 등으로도 생성가능
+       
+        return st
+    }()
     
     
     
@@ -124,6 +129,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         makeUI()
+        
+        stackView.addSubview(emailTextFieldView)
+        stackView.addSubview(passwordTextFieldView)
+        stackView.addSubview(loginButton)
 
     }
 
