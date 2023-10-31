@@ -7,9 +7,9 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-    
-    
+// 💡 일반적으로 class앞에 final 을 붙임 => 빨라짐 (다이렉트 디스패치가 일어나게함) / 대부분 상속불필요한 뷰컨트롤러에는 final 키워드 필수!
+final class ViewController: UIViewController {
+    // 💡 대부분의 변수는 private 을 붙이는게 좋다
     // 클로저의 실행문 타입으로 구현하기 // 이메일 텍스트필드가 올라가는 view
     private lazy var emailTextFieldView: UIView = {
         let view = UIView()
@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         view.addSubview(emailInfoLabel)
      // 메모리에 있는 emailTextFieldView 을 실제로 화면에 보여지도록 함(view에 표시)
      // 이미 UIViewController 에는 view라는 속성이 있음
-     //  emailTextFieldView를 let이 아닌 lazy var 로 설정하면 추가 가능한 코드, view가 먼저 생성되야 하므로 emailTextFieldView를 나중에 생성될 수 있게 하기 위함
+     // 💡 emailTextFieldView를 let이 아닌 lazy var 로 설정하면 추가 가능한 코드, view가 먼저 생성되야 하므로 emailTextFieldView를 나중에 생성될 수 있게 하기 위함
         return view
     }()
     // 클로저가 실행을 하자마자 view 저장속성이 생기고 view 에 셋팅을 다 한 후 emailTextFieldView 변수에 담김
@@ -157,8 +157,10 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         emailTextField.delegate = self
         passwordTextField.delegate = self
+        
         makeUI()
     }
 
@@ -289,7 +291,8 @@ class ViewController: UIViewController {
 // 텍스트를 입력할때 레이블이 위로 올라가게 UI를 변경하고 싶음 => 델리게이트 패턴으로 구현필요
 // 메서드 등을 분리하기 위해서 이렇게 확장해서 delegate 프로토콜을 채택함
 extension ViewController: UITextFieldDelegate {
-    // 텍스트필드의 입력이 시작되는 시점에서의 메서드 내용구현
+    
+    // 텍스트필드의 입력이 시작되는 시점에서의 메서드 내용구현(델리게이트 프로토콜에 선택적 요구되어진 메서드내용 구현)
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField == emailTextField {
             emailTextFieldView.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
@@ -311,7 +314,7 @@ extension ViewController: UITextFieldDelegate {
         }
     }
     
-    // 텍스트필드의 입력이 끝나는 시점에서의 메서드 내용구현
+    // 텍스트필드의 입력이 끝나는 시점에서의 메서드 내용구현(델리게이트 프로토콜에 선택적 요구되어진 메서드내용 구현)
     func textFieldDidEndEditing(_ textField: UITextField) {
         if textField == emailTextField {
             emailTextFieldView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
