@@ -127,7 +127,14 @@ class ViewController: UIViewController {
     }()
     
     
-    
+    private let passwordResetButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .clear
+        button.setTitle("비밀번호 재설정", for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.tintColor = .white
+        return button
+    }()
     
     
     
@@ -144,8 +151,11 @@ class ViewController: UIViewController {
 
     
     func makeUI() {
+        
+        view.backgroundColor = .black
         // 가장 아래있는 뷰에 이메일 텍스트 뷰 올리기
         view.addSubview(stackView)
+        view.addSubview(passwordResetButton)
         
         // 💡주의! 코드로 오토레이아웃 셋팅을 위한 사전 셋팅(필수) => 코드로 UI작성시 자동으로 frame 기준으로 오토레이아웃으로 잡아주는 기능을 끄는 코드
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -156,6 +166,8 @@ class ViewController: UIViewController {
         passwordLabel.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         passwordSecureButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        passwordResetButton.translatesAutoresizingMaskIntoConstraints = false
         // 오토레이아웃 셋팅(add New Constraints 했던 부분을 코드로 구현) 기준점이 필요
         
         // 배열로 넣어줄 수 있음(익숙해진 후에는 이렇게 사용)
@@ -190,7 +202,13 @@ class ViewController: UIViewController {
             
             passwordSecureButton.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: -8),    // 끝에 붙어있는 표시버튼이므로 trailing 만 사용
             passwordSecureButton.topAnchor.constraint(equalTo: passwordTextFieldView.topAnchor, constant: 15),
-            passwordSecureButton.bottomAnchor.constraint(equalTo: passwordTextFieldView.bottomAnchor, constant: -15)
+            passwordSecureButton.bottomAnchor.constraint(equalTo: passwordTextFieldView.bottomAnchor, constant: -15),
+            
+            passwordResetButton.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 30),
+            passwordResetButton.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -30),
+            passwordResetButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10),
+            passwordResetButton.heightAnchor.constraint(equalToConstant: textViewHeight)
+            
         ])
          
     }
