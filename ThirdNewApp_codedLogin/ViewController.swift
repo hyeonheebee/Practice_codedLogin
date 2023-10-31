@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     private lazy var emailTextFieldView: UIView = {
         let view = UIView
         view.layer.cornerRadius = 8
-        view.layer.clipsToBounds = true
+        view.clipsToBounds = true
         view.backgroundColor = UIColor.darkGray
         view.addSubview(emailTextFieldView) //  emailTextFieldView를 let이 아닌 lazy var 로 설정하면 추가 가능한 코드, view가 먼저 생성되야 하므로 emailTextFieldView를 나중에 생성될 수 있게 하기 위함
         return view
@@ -106,7 +106,7 @@ class ViewController: UIViewController {
         button.layer.borderWidth = 1
         button.layer.borderColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
         button.setTitle("로그인", for: .normal)
-        button.isEnabled = false
+        button.isEnabled = false    //처음에는 버튼을 비활성화 => 조건이 맞으면 활성화되도록
         
         return button
     }()
