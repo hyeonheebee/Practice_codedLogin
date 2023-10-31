@@ -9,21 +9,21 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let emailTextFieldView = UIView()
-    // 메모리에 올리기
+
     
-    /*
     // 클로저의 실행문 타입으로 구현하기 // 이메일 텍스트필드가 올라가는 view
     private lazy var emailTextFieldView: UIView = {
-        let view = UIView
+        let view = UIView()
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
         view.backgroundColor = UIColor.darkGray
-        view.addSubview(emailTextFieldView) //  emailTextFieldView를 let이 아닌 lazy var 로 설정하면 추가 가능한 코드, view가 먼저 생성되야 하므로 emailTextFieldView를 나중에 생성될 수 있게 하기 위함
+        view.addSubview(emailTextFieldView)    // 메모리에 있는 emailTextFieldView 을 실제로 화면에 보여지도록 함(view에 표시)
+     // 이미 UIViewController 에는 view라는 속성이 있음
+     //  emailTextFieldView를 let이 아닌 lazy var 로 설정하면 추가 가능한 코드, view가 먼저 생성되야 하므로 emailTextFieldView를 나중에 생성될 수 있게 하기 위함
         return view
     }()
     // 클로저가 실행을 하자마자 view 저장속성이 생기고 view 에 셋팅을 다 한 후 emailTextFieldView 변수에 담김
-     */
+    
     
     // 일반적으로 클로저 실행문 내에서는 좀 더 간단한 형태의 속성으로 선언해서 사용함
     private var emailInfoLabel: UILabel = {
@@ -111,10 +111,13 @@ class ViewController: UIViewController {
         return button
     }()
     
+    // 스택 뷰 설정
     lazy var stackView: UIStackView = {
-        let st = UIStackView()
-        // let st = UIStackView(arrangedSubviews: <#T##[UIView]#>) 등으로도 생성가능
-       
+        let st = UIStackView(arrangedSubviews: [emailTextFieldView,passwordTextFieldView,loginButton])
+        st.spacing = 18
+        st.axis = .vertical     // 세로로 묶어줄지 가로로 묶어줄지
+        st.distribution = .fillEqually      // 분배방식여부
+        st.alignment = .fill        // 정렬방식여부
         return st
     }()
     
@@ -130,24 +133,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         makeUI()
         
-        stackView.addSubview(emailTextFieldView)
-        stackView.addSubview(passwordTextFieldView)
-        stackView.addSubview(loginButton)
-
     }
 
     
     func makeUI() {
-        // 모서리를 둥글게 처리하는 코드
-        emailTextFieldView.layer.cornerRadius = 8
-        emailTextFieldView.clipsToBounds = true
-        
-        emailTextFieldView.backgroundColor = UIColor.darkGray
-        // 배경색상 셋팅
-        view.addSubview(emailTextFieldView)
-        // 메모리에 있는 emailTextFieldView 을 실제로 화면에 보여지도록 함(view에 표시)
-        // 이미 UIViewController 에는 view라는 속성이 있음
-        
         // 💡주의! 코드로 오토레이아웃 셋팅을 위한 사전 셋팅(필수) => 코드로 UI작성시 자동으로 frame 기준으로 오토레이아웃으로 잡아주는 기능을 끄는 코드
         emailTextFieldView.translatesAutoresizingMaskIntoConstraints = false
         
