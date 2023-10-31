@@ -127,13 +127,13 @@ class ViewController: UIViewController {
     }()
     
     
-    private let passwordResetButton: UIButton = {
+    lazy var passwordResetButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
         button.setTitle("비밀번호 재설정", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.tintColor = .white
-        button.addTarget(ViewController.self, action: #selector(resetButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -211,7 +211,9 @@ class ViewController: UIViewController {
             passwordResetButton.heightAnchor.constraint(equalToConstant: textViewHeight)
             
         ])
-         
+    
+        
+        
     }
     
     @objc func resetButtonTapped() {
