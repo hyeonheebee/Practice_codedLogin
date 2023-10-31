@@ -12,7 +12,19 @@ class ViewController: UIViewController {
     let emailTextFieldView = UIView()
     // 메모리에 올리기
     
-
+    /*
+    // 클로저의 실행문 타입으로 구현하기
+    lazy var emailTextFieldView: UIView = {
+        let view = UIView
+        view.layer.cornerRadius = 8
+        view.layer.masksToBounds = true
+        view.backgroundColor = UIColor.darkGray
+        view.addSubview(emailTextFieldView) //  emailTextFieldView를 let이 아닌 lazy var 로 설정하면 추가 가능한 코드, view가 먼저 생성되야 하므로 emailTextFieldView를 나중에 생성될 수 있게 하기 위함
+        return view
+    }()
+    // 클로저가 실행을 하자마자 view 저장속성이 생기고 view 에 셋팅을 다 한 후 emailTextFieldView 변수에 담김
+     */
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         makeUI()
@@ -21,6 +33,9 @@ class ViewController: UIViewController {
 
     
     func makeUI() {
+        // 모서리를 둥글게 처리하는 코드
+        emailTextFieldView.layer.cornerRadius = 8
+        emailTextFieldView.layer.masksToBounds = true
         
         emailTextFieldView.backgroundColor = UIColor.darkGray
         // 배경색상 셋팅
