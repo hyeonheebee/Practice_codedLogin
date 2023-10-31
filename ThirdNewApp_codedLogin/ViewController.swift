@@ -17,6 +17,7 @@ class ViewController: UIViewController {
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
         view.backgroundColor = UIColor.darkGray
+        //💡 주의! 순서가 중요하다(위에 있는 코드가 가장 아래에 깔림)
         view.addSubview(emailTextField)
         view.addSubview(emailInfoLabel)
      // 메모리에 있는 emailTextFieldView 을 실제로 화면에 보여지도록 함(view에 표시)
@@ -139,16 +140,25 @@ class ViewController: UIViewController {
 
     
     func makeUI() {
+        // 가장 아래있는 뷰에 이메일 텍스트 뷰 올리기
+        view.addSubview(emailTextFieldView)
         // 💡주의! 코드로 오토레이아웃 셋팅을 위한 사전 셋팅(필수) => 코드로 UI작성시 자동으로 frame 기준으로 오토레이아웃으로 잡아주는 기능을 끄는 코드
         emailInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+        emailTextField.translatesAutoresizingMaskIntoConstraints = false
         // 오토레이아웃 셋팅(add New Constraints 했던 부분을 코드로 구현) 기준점이 필요
-        // 왼쪽 앵커 잡기(닻 내리기, 기준점에서 왼쪽이 얼마만큼)
-        emailInfoLabel.leadingAnchor.constraint(equalTo: emailTextFieldView.leadingAnchor, constant: 8).isActive = true
-        emailInfoLabel.trailingAnchor.constraint(equalTo: emailTextFieldView.trailingAnchor, constant: 8).isActive = true
-        emailInfoLabel.centerYAnchor.constraint(equalTo: emailTextFieldView.centerYAnchor).isActive = true
- 
         
+        // 배열로 넣어줄 수 있음(익숙해진 후에는 이렇게 사용)
+        NSLayoutConstraint.activate([
+            emailInfoLabel.leadingAnchor.constraint(equalTo: emailTextFieldView.leadingAnchor, constant: 8),
+            emailInfoLabel.trailingAnchor.constraint(equalTo: emailTextFieldView.trailingAnchor, constant: 8),
+            emailInfoLabel.centerYAnchor.constraint(equalTo: emailTextFieldView.centerYAnchor),
+
+            emailTextField.leadingAnchor.constraint(equalTo: emailTextFieldView.leadingAnchor, constant: 8),
+            emailTextField.trailingAnchor.constraint(equalTo: emailTextFieldView.trailingAnchor, constant: 8),
+            emailTextField.topAnchor.constraint(equalTo: emailTextFieldView.topAnchor, constant: 15),
+            emailTextField.bottomAnchor.constraint(equalTo: emailTextFieldView.bottomAnchor, constant: 2)
+        ])
+         
     }
 
 }
