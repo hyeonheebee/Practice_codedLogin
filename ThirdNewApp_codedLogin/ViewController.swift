@@ -9,7 +9,6 @@ import UIKit
 
 class ViewController: UIViewController {
     
-
     
     // 클로저의 실행문 타입으로 구현하기 // 이메일 텍스트필드가 올라가는 view
     private lazy var emailTextFieldView: UIView = {
@@ -61,13 +60,13 @@ class ViewController: UIViewController {
         view.layer.cornerRadius = 5
         view.clipsToBounds = true
         view.addSubview(passwordTextField)
-        view.addSubview(passwordLabel)
+        view.addSubview(passwordInfoLabel)
         view.addSubview(passwordSecureButton)
         return view
     }()
     
     // 패스워드 텍스트필드의 안내문구 메모리 올리기
-    private let passwordLabel: UILabel = {
+    private let passwordInfoLabel: UILabel = {
         let label = UILabel()
         label.text = "비밀번호"
         label.font = UIFont.systemFont(ofSize: 18)
@@ -93,7 +92,7 @@ class ViewController: UIViewController {
     
     
     // 비밀번호 텍스트필드 내 '표시' 버튼 메모리올리기
-    lazy var passwordSecureButton: UIButton = {
+    private lazy var passwordSecureButton: UIButton = {
         let button = UIButton(type: .custom)    // 보통 system 혹은 custom을 주로 사용
         button.setTitle("표시", for: .normal)
         button.setTitleColor(#colorLiteral(red: 0.83, green: 0.83, blue: 0.83, alpha: 1), for: .normal)
@@ -127,7 +126,7 @@ class ViewController: UIViewController {
     }()
     
     
-    lazy var passwordResetButton: UIButton = {
+    private lazy var passwordResetButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
         button.setTitle("비밀번호 재설정", for: .normal)
@@ -146,8 +145,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
         makeUI()
-        
     }
 
     
@@ -164,7 +164,7 @@ class ViewController: UIViewController {
         emailInfoLabel.translatesAutoresizingMaskIntoConstraints = false
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
 
-        passwordLabel.translatesAutoresizingMaskIntoConstraints = false
+        passwordInfoLabel.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         passwordSecureButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -191,9 +191,9 @@ class ViewController: UIViewController {
             emailTextField.bottomAnchor.constraint(equalTo: emailTextFieldView.bottomAnchor, constant: 2),
             
             
-            passwordLabel.leadingAnchor.constraint(equalTo: passwordTextFieldView.leadingAnchor, constant: 8),
-            passwordLabel.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: 8),
-            passwordLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor),
+            passwordInfoLabel.leadingAnchor.constraint(equalTo: passwordTextFieldView.leadingAnchor, constant: 8),
+            passwordInfoLabel.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: 8),
+            passwordInfoLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor),
 
             passwordTextField.leadingAnchor.constraint(equalTo: passwordTextFieldView.leadingAnchor, constant: 8),
             passwordTextField.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: 8),
@@ -254,3 +254,44 @@ class ViewController: UIViewController {
 
 }
 
+
+// 텍스트를 입력할때 레이블이 위로 올라가게 UI를 변경하고 싶음 => 델리게이트 패턴으로 구현필요
+// 메서드 등을 분리하기 위해서 이렇게 확장해서 delegate 프로토콜을 채택함
+extension ViewController: UITextFieldDelegate {
+    // 텍스트필드의 입력이 시작되는 시점에서의 메서드 내용구현
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == emailTextField {
+            emailTextFieldView.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+            emailInfoLabel.font = UIFont.systemFont(ofSize: 11)
+            // 오토레이아웃 업데이트(label을 이동시킴)
+            // emailInfoLabelCenterYConstraint.constant = -13
+        }
+        if textField == passwordTextField {
+            passwordTextFieldView.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+            passwordInfoLabel.font = UIFont.systemFont(ofSize: 11)
+            // 오토레이아웃 업데이트(label을 이동시킴)
+            // passwordInfoLabelCenterYConstraint.constant = -13
+        }
+    }
+    
+    // 텍스트필드의 입력이 끝나는 시점에서의 메서드 내용구현
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == emailTextField {
+            emailTextFieldView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+            if emailTextField.text == "" {
+                emailInfoLabel.font = UIFont.systemFont(ofSize: 18)
+                // 오토레이아웃 업데이트(label을 원래자리로 이동시킴)
+                // emailInfoLabelCenterYConstraint.constant = 0
+            }
+                    }
+        if textField == passwordTextField {
+            passwordTextFieldView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+            if passwordTextField.text == "" {
+                passwordInfoLabel.font = UIFont.systemFont(ofSize: 18)
+                // 오토레이아웃 업데이트(label을 원래자리로 이동시킴)
+                // passwordInfoLabelCenterYConstraint.constant = 0
+            }
+                    }
+    }
+    
+}
