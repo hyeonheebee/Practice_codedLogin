@@ -286,6 +286,12 @@ extension ViewController: UITextFieldDelegate {
             // 오토레이아웃 업데이트(label을 이동시킴) -13 => 올라감
             passwordInfoLabelCenterYConstraint.constant = -13
         }
+        
+        // 애니메이션 기능 추가
+        // 런루프동안 띄엄띄엄 그리는게 아닌 그림을 그리는 동안 자연스럽게 그림을 그릴 수 있게하는 코드
+        UIView.animate(withDuration: 0.3) {
+            self.stackView.layoutIfNeeded()
+        }
     }
     
     // 텍스트필드의 입력이 끝나는 시점에서의 메서드 내용구현
@@ -297,7 +303,7 @@ extension ViewController: UITextFieldDelegate {
                 // 오토레이아웃 업데이트(label을 원래자리로 이동시킴)
                 emailInfoLabelCenterYConstraint.constant = 0
             }
-                    }
+        }
         if textField == passwordTextField {
             passwordTextFieldView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
             if passwordTextField.text == "" {
@@ -305,7 +311,13 @@ extension ViewController: UITextFieldDelegate {
                 // 오토레이아웃 업데이트(label을 원래자리로 이동시킴)
                 passwordInfoLabelCenterYConstraint.constant = 0
             }
-                    }
+        }
+        // 애니메이션 기능 추가
+        // 런루프동안 띄엄띄엄 그리는게 아닌 그림을 그리는 동안 자연스럽게 그림을 그릴 수 있게하는 코드
+        UIView.animate(withDuration: 0.3) {
+            self.stackView.layoutIfNeeded()
+        }
+        
     }
     
 }
