@@ -98,7 +98,7 @@ class ViewController: UIViewController {
         button.setTitle("표시", for: .normal)
         button.setTitleColor(#colorLiteral(red: 0.83, green: 0.83, blue: 0.83, alpha: 1), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .light)     // 타이틀레이블 크기
-        // button.addTarget(self, action: #selector(passwordSecureModeSetting), for: .touchUpInside)
+        //button.addTarget(self, action: #selector(passwordSecureModeSetting), for: .touchUpInside)
         return button
     }()
     
@@ -133,6 +133,7 @@ class ViewController: UIViewController {
         button.setTitle("비밀번호 재설정", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.tintColor = .white
+        button.addTarget(ViewController.self, action: #selector(resetButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -211,6 +212,10 @@ class ViewController: UIViewController {
             
         ])
          
+    }
+    
+    @objc func resetButtonTapped() {
+        print("reset button 눌림")
     }
 
 }
