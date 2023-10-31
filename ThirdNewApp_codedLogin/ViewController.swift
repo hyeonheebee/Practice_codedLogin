@@ -47,7 +47,9 @@ class ViewController: UIViewController {
         tf.autocorrectionType = .no         // 자동으로 틀린글자 잡아주는 기능 여부
         tf.spellCheckingType = .no          // 자동으로 스펠링체크 기능 여부
         tf.keyboardType = .emailAddress     // 키보드 타입 email설정
-        // tf.addTarget(self, action: #selector(textFieldEditingChanged(_:)), for: .editingChanged)
+        
+        // 값이 변경될때마다 해당 함수를 호출하는 코드
+        tf.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
         return tf
     }()
     
@@ -75,7 +77,7 @@ class ViewController: UIViewController {
     }()
     
     // 비밀번호 텍스트필드 메모리올리기
-    private let passwordTextField: UITextField = {
+    private lazy var passwordTextField: UITextField = {
         let tf = UITextField()
         tf.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         tf.frame.size.height = 48
@@ -87,6 +89,9 @@ class ViewController: UIViewController {
         tf.spellCheckingType = .no
         tf.isSecureTextEntry = true     // 비밀번호를 가리는 설정
         tf.clearsOnBeginEditing = false
+        
+        // 값이 변경될때마다 해당 함수를 호출하는 코드
+        tf.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
         return tf
     }()
     
@@ -102,7 +107,7 @@ class ViewController: UIViewController {
     }()
     
     // 로그인 버튼 메모리올리기
-    private let loginButton: UIButton = {
+    private lazy var loginButton: UIButton = {
         let button = UIButton(type: .custom)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 5
@@ -111,7 +116,7 @@ class ViewController: UIViewController {
         button.layer.borderColor = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
         button.setTitle("로그인", for: .normal)
         button.isEnabled = false    //처음에는 버튼을 비활성화 => 조건이 맞으면 활성화되도록
-        
+        button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -265,6 +270,18 @@ class ViewController: UIViewController {
         // 이 alert창이 실제로 다음화면임
         present(alert, animated: true, completion: nil)
     }
+    
+    
+    // 로그인 버튼이 눌렸을때의 메서드
+    @objc func loginButtonTapped() {
+        print("로그인 버튼이 눌렸습니다")
+    }
+    
+    // 화면이 터치되면 키보드가 내려감(first Responder 없어짐)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
 
 }
 
@@ -319,5 +336,30 @@ extension ViewController: UITextFieldDelegate {
         }
         
     }
+    
+    
+    // 텍스트필드가 변경될때 호출되는 메서드
+    @objc func textFieldEditingChanged(textField: UITextField) {
+        // 첫번째 글자가 있는데 그 문자가 빈문자열이면 빈문자를 입력해주고 벗어나는 코드
+        if textField.text?.count == 1 {
+            if textField.text?.first == " " {
+                textField.text = ""
+                return
+            }
+        }
+        guard
+            // 둘다 입력이 되어있고(let 바인딩이 되고) isEmpty 가 false 즉 비어있지 않다면 진행, 아니라면 else 문으로 빠져나가기
+            let email = emailTextField.text, !email.isEmpty,
+            let password = passwordTextField.text, !password.isEmpty
+        else {
+            loginButton.backgroundColor = .clear
+            loginButton.isEnabled = false
+            return
+        }
+        loginButton.backgroundColor = .red
+        loginButton.isEnabled = true
+    }
+    
+    
     
 }
