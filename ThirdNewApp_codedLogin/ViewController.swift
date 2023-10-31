@@ -131,7 +131,7 @@ class ViewController: UIViewController {
     func makeUI() {
         // 모서리를 둥글게 처리하는 코드
         emailTextFieldView.layer.cornerRadius = 8
-        emailTextFieldView.layer.clipsToBounds = true
+        emailTextFieldView.clipsToBounds = true
         
         emailTextFieldView.backgroundColor = UIColor.darkGray
         // 배경색상 셋팅
