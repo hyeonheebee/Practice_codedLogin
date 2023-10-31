@@ -217,7 +217,30 @@ class ViewController: UIViewController {
     }
     
     @objc func resetButtonTapped() {
-        print("reset button 눌림")
+        // print("reset button 눌림")
+        
+        // controller 만들기
+        let alert = UIAlertController(title: "비밀번호 바꾸기", message: "비밀번호를 바꾸시겠습니까?", preferredStyle: .alert)
+        // preferredStyle 이 alert면 가운데 뜨고 actionSheet면 토스트처럼 올라옴
+        
+        // controller 안에 배치시킬 action 만들기
+        let success = UIAlertAction(title: "확인", style: .default) { action in
+            print("확인버튼이 눌렸습니다")
+            print(action.title!)
+            // "확인" 을 누르고 나면 action 실행 (클로저 실행, action 은 클로저의 파라미터일뿐 사용해도 안해도그만)
+        }
+        
+        let cancel = UIAlertAction(title: "취소", style: .cancel) { action in
+            print("취소버튼이 눌렸습니다")
+        }
+        
+        // controller에 action 올려주기 (버튼생성)
+        alert.addAction(success)
+        alert.addAction(cancel)
+        
+        // 다음화면으로 넘어가는 메서드 present
+        // 이 alert창이 실제로 다음화면임 
+        present(alert, animated: true, completion: nil)
     }
 
 }
