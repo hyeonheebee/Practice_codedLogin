@@ -1,16 +1,13 @@
 //
-//  ViewController.swift
+//  LoginView.swift
 //  ThirdNewApp_codedLogin
 //
-//  Created by 심현희 on 2023/10/31.
+//  Created by 심현희 on 2023/11/06.
 //
 
 import UIKit
 
-// 💡 일반적으로 class앞에 final 을 붙임 => 빨라짐 (다이렉트 디스패치가 일어나게함) / 대부분 상속불필요한 뷰컨트롤러에는 final 키워드 필수!
-final class ViewController: UIViewController {
-    // 💡 대부분의 변수는 private 을 붙이는게 좋다
-    
+class LoginView: UIView {
     // MARK: - 이메일 입력 뷰 구현
     // 클로저의 실행문 타입으로 구현하기 // 이메일 텍스트필드가 올라가는 view
     private lazy var emailTextFieldView: UIView = {
@@ -21,9 +18,9 @@ final class ViewController: UIViewController {
         //💡 주의! 순서가 중요하다(위에 있는 코드가 가장 아래에 깔림)
         view.addSubview(emailTextField)
         view.addSubview(emailInfoLabel)
-     // 메모리에 있는 emailTextFieldView 을 실제로 화면에 보여지도록 함(view에 표시)
-     // 이미 UIViewController 에는 view라는 속성이 있음
-     // 💡 emailTextFieldView를 let이 아닌 lazy var 로 설정하면 추가 가능한 코드, view가 먼저 생성되야 하므로 emailTextFieldView를 나중에 생성될 수 있게 하기 위함
+        // 메모리에 있는 emailTextFieldView 을 실제로 화면에 보여지도록 함(view에 표시)
+        // 이미 UIViewController 에는 view라는 속성이 있음
+        // 💡 emailTextFieldView를 let이 아닌 lazy var 로 설정하면 추가 가능한 코드, view가 먼저 생성되야 하므로 emailTextFieldView를 나중에 생성될 수 있게 하기 위함
         return view
     }()
     // 클로저가 실행을 하자마자 view 저장속성이 생기고 view 에 셋팅을 다 한 후 emailTextFieldView 변수에 담김
@@ -110,7 +107,7 @@ final class ViewController: UIViewController {
     
     // MARK: - 로그인버튼 구현
     // 로그인 버튼 메모리올리기
-    private lazy var loginButton: UIButton = {
+    lazy var loginButton: UIButton = {
         let button = UIButton(type: .custom)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 5
@@ -119,7 +116,6 @@ final class ViewController: UIViewController {
         button.layer.borderColor = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
         button.setTitle("로그인", for: .normal)
         button.isEnabled = false    //처음에는 버튼을 비활성화 => 조건이 맞으면 활성화되도록
-        button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -137,13 +133,12 @@ final class ViewController: UIViewController {
     
     
     // MARK: - 비밀번호 표시버튼 구현
-    private lazy var passwordResetButton: UIButton = {
+    var passwordResetButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
         button.setTitle("비밀번호 재설정", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.tintColor = .white
-        button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -160,93 +155,166 @@ final class ViewController: UIViewController {
     lazy var emailInfoLabelCenterYConstraint = emailInfoLabel.centerYAnchor.constraint(equalTo: emailTextFieldView.centerYAnchor)
     lazy var passwordInfoLabelCenterYConstraint = passwordInfoLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor)
     
-    // MARK: - 뷰디드로드 함수
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    
+    // MARK: - frame 을 생성하는 생성자(viewDidLoad와 비슷한 역할)
+    
+    override init(frame: CGRect){
+        super.init(frame: frame)
+        
+        setUp()
+        addViews()
+        setConstraints()
+        
+    }
+    
+    
+    // MARK: - 생성자 init을 재정의하면 필수생성자도 반드시 재정의해야함
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - 처음 그려주는 화면 메서드
+    func setUp() {
+        
+        stackView.backgroundColor = .black
         
         emailTextField.delegate = self
         passwordTextField.delegate = self
-        
-        makeUI()
     }
-
+    func addViews() {
+        [stackView, passwordResetButton].forEach { addSubview($0) }
+    }
     
-    // MARK: - 처음 그려주는 화면 메서드
-    func makeUI() {
+    private func setConstraints() {
+        stackViewConstraints()
         
-        view.backgroundColor = .black
-        // 가장 아래있는 뷰에 이메일 텍스트 뷰 올리기
-        view.addSubview(stackView)
-        view.addSubview(passwordResetButton)
+        emailInfoLabelConstraints()
+        emailTextFieldConstraints()
         
-        // 💡주의! 코드로 오토레이아웃 셋팅을 위한 사전 셋팅(필수) => 코드로 UI작성시 자동으로 frame 기준으로 오토레이아웃으로 잡아주는 기능을 끄는 코드
+        passwordInfoLabelConstraints()
+        passwordTextFieldConstraints()
+        passwordResetButtonConstraints()
+        passwordSecureButtonConstraints()
+    }
+    
+    // 💡주의! 코드로 오토레이아웃 셋팅을 위한 사전 셋팅(필수) => 코드로 UI작성시 자동으로 frame 기준으로 오토레이아웃으로 잡아주는 기능을 끄는 코드
+    // 오토레이아웃 셋팅(add New Constraints 했던 부분을 코드로 구현) 기준점이 필요
+    
+    // MARK: - 오토레이아웃 제약조건 추가
+    // 배열로 넣어줄 수 있음(익숙해진 후에는 이렇게 사용)
+    
+    private func stackViewConstraints() {
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30),
+            stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            // 각 텍스트뷰의 높이의 3개만큼의 높이 + 36만큼의 높이를 가진 스택뷰 설정
+            stackView.heightAnchor.constraint(equalToConstant: textViewHeight*3 + 36)
+        ])
+        
+    }
+    
+    private func emailInfoLabelConstraints() {
         
         emailInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        emailTextField.translatesAutoresizingMaskIntoConstraints = false
-
-        passwordInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        passwordTextField.translatesAutoresizingMaskIntoConstraints = false
-        passwordSecureButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        passwordResetButton.translatesAutoresizingMaskIntoConstraints = false
-        // 오토레이아웃 셋팅(add New Constraints 했던 부분을 코드로 구현) 기준점이 필요
-        
-        
-        // MARK: - 오토레이아웃 제약조건 추가
-        // 배열로 넣어줄 수 있음(익숙해진 후에는 이렇게 사용)
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            // 각 텍스트뷰의 높이의 3개만큼의 높이 + 36만큼의 높이를 가진 스택뷰 설정
-            stackView.heightAnchor.constraint(equalToConstant: textViewHeight*3 + 36),
-            
-            
             emailInfoLabel.leadingAnchor.constraint(equalTo: emailTextFieldView.leadingAnchor, constant: 8),
             emailInfoLabel.trailingAnchor.constraint(equalTo: emailTextFieldView.trailingAnchor, constant: 8),
             
             // 고정으로 만들면 안됨
             // emailInfoLabel.centerYAnchor.constraint(equalTo: emailTextFieldView.centerYAnchor),
             // 만든 변수로 설정해줘야함
-            emailInfoLabelCenterYConstraint,
+            emailInfoLabelCenterYConstraint
+            
+        ])
+    }
+    
+    private func emailTextFieldConstraints() {
+        emailTextField.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
             
             emailTextField.leadingAnchor.constraint(equalTo: emailTextFieldView.leadingAnchor, constant: 8),
             emailTextField.trailingAnchor.constraint(equalTo: emailTextFieldView.trailingAnchor, constant: 8),
             emailTextField.topAnchor.constraint(equalTo: emailTextFieldView.topAnchor, constant: 15),
-            emailTextField.bottomAnchor.constraint(equalTo: emailTextFieldView.bottomAnchor, constant: 2),
+            emailTextField.bottomAnchor.constraint(equalTo: emailTextFieldView.bottomAnchor, constant: 2)
             
+        ])
+    }
+    private func passwordInfoLabelConstraints() {
+        
+        passwordInfoLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
             
             passwordInfoLabel.leadingAnchor.constraint(equalTo: passwordTextFieldView.leadingAnchor, constant: 8),
             passwordInfoLabel.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: 8),
             // passwordInfoLabel.centerYAnchor.constraint(equalTo: passwordTextFieldView.centerYAnchor),
             // 만든 변수로 설정해줘야함
-            passwordInfoLabelCenterYConstraint,
+            passwordInfoLabelCenterYConstraint
+        ])
+        
+    }
+    private func passwordTextFieldConstraints() {
+        passwordTextField.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
             
-
             passwordTextField.leadingAnchor.constraint(equalTo: passwordTextFieldView.leadingAnchor, constant: 8),
             passwordTextField.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: 8),
             passwordTextField.topAnchor.constraint(equalTo: passwordTextFieldView.topAnchor, constant: 15),
-            passwordTextField.bottomAnchor.constraint(equalTo: passwordTextFieldView.bottomAnchor, constant: 2),
-
-            
+            passwordTextField.bottomAnchor.constraint(equalTo: passwordTextFieldView.bottomAnchor, constant: 2)
+        ])
+        
+    }
+    private func passwordSecureButtonConstraints() {
+        passwordSecureButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
             passwordSecureButton.trailingAnchor.constraint(equalTo: passwordTextFieldView.trailingAnchor, constant: -8),    // 끝에 붙어있는 표시버튼이므로 trailing 만 사용
             passwordSecureButton.topAnchor.constraint(equalTo: passwordTextFieldView.topAnchor, constant: 15),
-            passwordSecureButton.bottomAnchor.constraint(equalTo: passwordTextFieldView.bottomAnchor, constant: -15),
-            
+            passwordSecureButton.bottomAnchor.constraint(equalTo: passwordTextFieldView.bottomAnchor, constant: -15)
+        ])
+        
+    }
+    private func passwordResetButtonConstraints() {
+        passwordResetButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
             passwordResetButton.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 30),
             passwordResetButton.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -30),
             passwordResetButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10),
             passwordResetButton.heightAnchor.constraint(equalToConstant: textViewHeight)
             
         ])
-    
         
         
     }
-    
-    
+    // MARK: - 텍스트필드 변경시 호출 메서드(로그인 버튼활성화 관련)
+    // 텍스트필드가 변경될때 호출되는 메서드
+    @objc func textFieldEditingChanged(textField: UITextField) {
+        // 첫번째 글자가 있는데 그 문자가 빈문자열이면 빈문자를 입력해주고 벗어나는 코드
+        if textField.text?.count == 1 {
+            if textField.text?.first == " " {
+                textField.text = ""
+                return
+            }
+        }
+        guard
+            // 둘다 입력이 되어있고(let 바인딩이 되고) isEmpty 가 false 즉 비어있지 않다면 진행, 아니라면 else 문으로 빠져나가기
+            let email = emailTextField.text, !email.isEmpty,
+            let password = passwordTextField.text, !password.isEmpty
+        else {
+            loginButton.backgroundColor = .clear
+            loginButton.isEnabled = false
+            return
+        }
+        loginButton.backgroundColor = .red
+        loginButton.isEnabled = true
+    }
+
+    // MARK: - 화면 터치 시 키보드 내려가는 메서드
+    // 화면이 터치되면 키보드가 내려감(first Responder 없어짐)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.endEditing(true)
+    }
     // MARK: - 비밀번호 표시버튼 동작 메서드
     // selector로 동작하므로 @objc 키워드 필요
     @objc func passwordSecureModeSetting() {
@@ -254,61 +322,18 @@ final class ViewController: UIViewController {
         // 보통 bool 타입은 toggle 메서드 제공하여 토글시 true <-> false 가능
         // print("표시버튼이 눌렸습니다")
     }
-    
-    
-    
-    // MARK: - 리셋버튼 메서드
-    @objc func resetButtonTapped() {
-        // print("reset button 눌림")
-        
-        // controller 만들기
-        let alert = UIAlertController(title: "비밀번호 바꾸기", message: "비밀번호를 바꾸시겠습니까?", preferredStyle: .alert)
-        // preferredStyle 이 alert면 가운데 뜨고 actionSheet면 토스트처럼 올라옴
-        
-        // controller 안에 배치시킬 action 만들기
-        let success = UIAlertAction(title: "확인", style: .default) { action in
-            print("확인버튼이 눌렸습니다")
-            print(action.title!)
-            // "확인" 을 누르고 나면 action 실행 (클로저 실행, action 은 클로저의 파라미터일뿐 사용해도 안해도그만)
-        }
-        
-        let cancel = UIAlertAction(title: "취소", style: .cancel) { action in
-            print("취소버튼이 눌렸습니다")
-        }
-        
-        // controller에 action 올려주기 (버튼생성)
-        alert.addAction(success)
-        alert.addAction(cancel)
-        
-        // 다음화면으로 넘어가는 메서드 present
-        // 이 alert창이 실제로 다음화면임
-        present(alert, animated: true, completion: nil)
-    }
-    
-    
-    
-    // MARK: - 로그인 버튼 메서드
-    // 로그인 버튼이 눌렸을때의 메서드
-    @objc func loginButtonTapped() {
-        print("로그인 버튼이 눌렸습니다")
-    }
-    
-    
-    // MARK: - 화면 터치 시 키보드 내려가는 메서드
-    // 화면이 터치되면 키보드가 내려감(first Responder 없어짐)
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
 
 }
 
 
+    
 
+
+// UI와 관련되 있으므로 빼서 구현
 // MARK: - 델리게이트 패턴 구현을 위한 확장
 // 텍스트를 입력할때 레이블이 위로 올라가게 UI를 변경하고 싶음 => 델리게이트 패턴으로 구현필요
 // 메서드 등을 분리하기 위해서 이렇게 확장해서 delegate 프로토콜을 채택함
-extension ViewController: UITextFieldDelegate {
+extension LoginView: UITextFieldDelegate {
 
     // MARK: - 텍스트필드 입력 시작시점의 메서드
     // 텍스트필드의 입력이 시작되는 시점에서의 메서드 내용구현(델리게이트 프로토콜에 선택적 요구되어진 메서드내용 구현)
@@ -359,32 +384,17 @@ extension ViewController: UITextFieldDelegate {
             self.stackView.layoutIfNeeded()
         }
         
+        
     }
     
-    
-    // MARK: - 텍스트필드 변경시 호출 메서드(로그인 버튼활성화 관련)
-    // 텍스트필드가 변경될때 호출되는 메서드
-    @objc func textFieldEditingChanged(textField: UITextField) {
-        // 첫번째 글자가 있는데 그 문자가 빈문자열이면 빈문자를 입력해주고 벗어나는 코드
-        if textField.text?.count == 1 {
-            if textField.text?.first == " " {
-                textField.text = ""
-                return
-            }
-        }
-        guard
-            // 둘다 입력이 되어있고(let 바인딩이 되고) isEmpty 가 false 즉 비어있지 않다면 진행, 아니라면 else 문으로 빠져나가기
-            let email = emailTextField.text, !email.isEmpty,
-            let password = passwordTextField.text, !password.isEmpty
-        else {
-            loginButton.backgroundColor = .clear
-            loginButton.isEnabled = false
-            return
-        }
-        loginButton.backgroundColor = .red
-        loginButton.isEnabled = true
+    // 엔터 누르면 일단 키보드 내림
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
+
     
     
     
 }
+
